@@ -94,7 +94,15 @@ namespace WeatherApp.ViewModels
             ///   Si le service de temperature est null
             ///     Assigner le service de température
             /// 
-           
+            if (CurrentViewModel == ViewModels.Find(x => x.Name == "ConfigurationViewModel"))
+            {
+                ows.SetApiKey((ViewModels.Find(x => x.Name == "ConfigurationViewModel") as ConfigurationViewModel).ApiKey);
+                BaseViewModel temp = ViewModels.Find(x => x.Name == "TemperatureViewModel");
+                if ((temp as TemperatureViewModel).TemperatureService == null)
+                {
+                    (ViewModels.Find(x => x.Name == "TemperatureViewModel") as TemperatureViewModel).SetTemperatureService(ows);
+                }
+            }
 
             /// Permet de retrouver le ViewModel avec le nom indiqé
             CurrentViewModel = ViewModels.FirstOrDefault(x => x.Name == pageName);  
