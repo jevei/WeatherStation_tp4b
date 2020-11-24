@@ -111,7 +111,14 @@ namespace OpenWeatherAPI
                     OWCurrentWeaterModel result = await response.Content.ReadAsAsync<OWCurrentWeaterModel>();
                     return result;
                 }
-
+                if (response.StatusCode.ToString() == "Unautorized")
+                {
+                    throw new Exception("Clé invalide");
+                }
+                else if (response.StatusCode.ToString() == "Not Found")
+                {
+                    throw new Exception("Ville introuvable");
+                }
                 return null;
 
             }

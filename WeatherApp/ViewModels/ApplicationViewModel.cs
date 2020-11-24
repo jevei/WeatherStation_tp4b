@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WeatherApp.Commands;
+using WeatherApp.Properties;
 using WeatherApp.Services;
 
 namespace WeatherApp.ViewModels
@@ -64,13 +65,13 @@ namespace WeatherApp.ViewModels
             /// TODO 09 : Indiquer qu'il n'y a aucune clé si le Settings apiKey est vide.
             /// S'il y a une valeur, instancié OpenWeatherService avec la clé
             var apiKey = AppConfiguration.GetValue("OWApiKey");
-            if(String.IsNullOrEmpty(apiKey))
+            if(String.IsNullOrEmpty(Settings.Default.apiKey))
             {
                 tvm.RawText = "apiKey vide!!!";
             }
             else
             {
-                ows = new OpenWeatherService(apiKey);
+                ows = new OpenWeatherService(Settings.Default.apiKey);
             }
 
             tvm.SetTemperatureService(ows);
@@ -96,11 +97,16 @@ namespace WeatherApp.ViewModels
             /// 
             if (CurrentViewModel == ViewModels.Find(x => x.Name == "ConfigurationViewModel"))
             {
-                ows.SetApiKey((ViewModels.Find(x => x.Name == "ConfigurationViewModel") as ConfigurationViewModel).ApiKey);
-                BaseViewModel temp = ViewModels.Find(x => x.Name == "TemperatureViewModel");
-                if ((temp as TemperatureViewModel).TemperatureService == null)
+                var tempCVM = CurrentViewModel as ConfigurationViewModel;
+                var tempTVM = (ViewModels.Find(x => x.Name == "TemperatureViewModel")) as TemperatureViewModel;
+                if (ows == null)
                 {
-                    (ViewModels.Find(x => x.Name == "TemperatureViewModel") as TemperatureViewModel).SetTemperatureService(ows);
+                    ows = new OpenWeatherService(Settings.Default.apiKey);
+                }
+                ows.SetApiKey(Settings.Default.apiKey);
+                if (tempTVM.TemperatureService == null)
+                {
+                    tempTVM.SetTemperatureService(ows);
                 }
             }
 

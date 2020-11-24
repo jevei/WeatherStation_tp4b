@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using WeatherApp.Commands;
+using WeatherApp.Properties;
 
 namespace WeatherApp.ViewModels
 {
@@ -75,8 +76,11 @@ namespace WeatherApp.ViewModels
         /// <returns></returns>
         public bool CanGetTemp(string obj)
         {
-            
-            return TemperatureService != null;
+            if (!String.IsNullOrEmpty(Settings.Default.apiKey))
+            {
+                return TemperatureService != null;
+            }
+            return false;
         }
 
         public void GetTemp(string obj)
